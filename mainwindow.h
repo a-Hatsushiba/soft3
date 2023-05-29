@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
+#include <QString>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,17 +18,17 @@ public:
     ~MainWindow();
 
 private slots:
-    void openImageFile();
+    void on_quitButton_released();
 
-    void on_nextPageButton_released();
+    void on_startButton_released();
 
-    void on_returnButton_released();
+    void on_fileOpenButton_1_released();
 
-    void on_finishButton_released();
+    void on_returnButton_1_released();
 
-    void on_pushButton_released();
+    void on_fileOpenButton_2_released();
 
-    void on_fileButton_released();
+    void on_returnButton_2_released();
 
 private:
     Ui::MainWindow *ui;
