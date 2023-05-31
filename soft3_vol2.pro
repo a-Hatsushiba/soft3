@@ -21,12 +21,15 @@ LIBS += -L/usr/include/ \
      -lopencv_imgproc \
      -lopencv_highgui \
      -lopencv_videoio \
+     -lopencv_imgcodecs \
 
 SOURCES += \
+    getUsbCamera.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    getUsbCamera.h \
     mainwindow.h
 
 FORMS += \

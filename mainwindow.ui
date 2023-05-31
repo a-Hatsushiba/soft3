@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1500</width>
-    <height>784</height>
+    <height>788</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -255,7 +255,7 @@
              </font>
             </property>
             <property name="text">
-             <string>1枚目の画像を選択してください</string>
+             <string>画像の読み込み方法を選択してください</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -270,7 +270,7 @@
              </font>
             </property>
             <property name="text">
-             <string/>
+             <string>カメラ読み込みの場合、カメラ起動までに時間がかかります。しばらくお待ちください。</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -293,7 +293,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="fileOpenButton_1">
+             <widget class="QPushButton" name="fileSelectButton">
               <property name="minimumSize">
                <size>
                 <width>200</width>
@@ -389,6 +389,138 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="page_3">
+       <layout class="QHBoxLayout" name="horizontalLayout_13">
+        <item>
+         <spacer name="horizontalSpacer_23">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>403</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="cameraLabel_1">
+          <property name="minimumSize">
+           <size>
+            <width>640</width>
+            <height>480</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <spacer name="verticalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="debuglabel_3">
+            <property name="minimumSize">
+             <size>
+              <width>400</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>20</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <item>
+             <spacer name="horizontalSpacer_24">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="cameraTakeButton_1">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>100</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>20</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>撮影</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_22">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_6">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="page_5">
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
@@ -456,7 +588,7 @@
              </font>
             </property>
             <property name="text">
-             <string>2枚目の画像を選択してください</string>
+             <string>ファイルから画像を選択してください</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -494,7 +626,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="fileOpenButton_2">
+             <widget class="QPushButton" name="fileOpenButton_1">
               <property name="minimumSize">
                <size>
                 <width>200</width>
@@ -507,7 +639,7 @@
                </font>
               </property>
               <property name="text">
-               <string>ファイルから画像読み込み</string>
+               <string>1枚目の画像読み込み</string>
               </property>
              </widget>
             </item>
@@ -525,7 +657,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="cameraButton_2">
+             <widget class="QPushButton" name="fileOpenButton_2">
               <property name="minimumSize">
                <size>
                 <width>200</width>
@@ -538,7 +670,7 @@
                </font>
               </property>
               <property name="text">
-               <string>カメラから画像読み込み</string>
+               <string>2枚目の画像読み込み</string>
               </property>
              </widget>
             </item>
