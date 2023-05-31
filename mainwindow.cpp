@@ -1,10 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#define VIEWPATH 1
 #define PATH1 "/home/akari/workspace/soft3/Qt/soft3_vol2/test1.png"
 #define PATH2 "/home/akari/workspace/soft3/Qt/soft3_vol2/test2.png"
 
-QString g_img_path1, g_img_path2; //ファイル画像のパスを入れるためのグローバル変数
+std::string g_img_path1, g_img_path2; //ファイル画像のパスを入れるためのグローバル変数
 //cv::Mat g_img1, g_img2;
 int g_count = 0; //カメラ入力のカウントを行うための変数。
 
@@ -73,9 +74,13 @@ void MainWindow::on_returnButton_1_released()
 
 void MainWindow::on_fileOpenButton_1_released()
 {
-    QString selFilter;
-    g_img_path1 = QFileDialog::getOpenFileName(this, tr("1枚目の画像選択"), "", tr("Image(*.png *.jpg *.jpeg)"), &selFilter, QFileDialog::DontUseCustomDirectoryIcons); //opencvに渡すには共通の変数にするべきだね
-    if(g_img_path1.isEmpty()){
+    QString selFilter, img_path1;
+    img_path1 = QFileDialog::getOpenFileName(this, tr("1枚目の画像選択"), "", tr("Image(*.png *.jpg *.jpeg)"), &selFilter, QFileDialog::DontUseCustomDirectoryIcons); //opencvに渡すには共通の変数にするべきだね
+    g_img_path1 = img_path1.toStdString();
+    #ifdef VIEWPATH
+        std::cout << "g_img_path1 is " << g_img_path1 << std::endl;
+    #endif
+    if(g_img_path1.empty()){
         ui->debuglabel_2->setText("1枚目の画像の取得に失敗しました。もう一度選択してください。");
     }else{
         ui->debuglabel_2->setText("2枚目の画像を選択してください。");
@@ -116,15 +121,30 @@ void MainWindow::on_cameraTakeButton_1_released()
 {
     cv::Mat img;
     getUsbCamT->getImage(&img);
+    cv::cvtColor(img, img, cv::COLOR_RGB2BGR);
 //    qtImage = QImage((const unsigned char*)(img.data), img.cols, img.rows, QImage::Format_RGB888);
     g_count++;
     if(g_count == 1){
         cv::imwrite(PATH1, img);
-        g_img_path1 = tr(PATH1);
-        ui->debuglabel_3->setText("2枚目の画像を撮影してください。");
+        g_img_path1 = PATH1;
+        #ifdef VIEWPATH
+            std::cout << "g_img_path1 is " << g_img_path1 << std::endl;
+        #endif
+        if(g_img_path1.empty()){
+            ui->debuglabel_3->setText("もう一度1枚目の画像を撮影してください。");
+            g_count--;
+        }else{
+            ui->debuglabel_3->setText("2枚目の画像を撮影してください。");
+        }
     }else{
         cv::imwrite(PATH2, img);
-        g_img_path1 = tr(PATH2);
+        g_img_path2 = PATH2;
+        if(g_img_path2.empty()){
+            ui->debuglabel_3->setText("もう一度2枚目の画像を撮影してください。");
+        }
+        #ifdef VIEWPATH
+            std::cout << "g_img_path2 is " << g_img_path2 << std::endl;
+        #endif
         g_count = 0;
         ui->debuglabel_3->setText("");
         getUsbCamT->Stop = true;
@@ -135,12 +155,17 @@ void MainWindow::on_cameraTakeButton_1_released()
 
 void MainWindow::on_fileOpenButton_2_released()
 {
-    if(g_img_path1.isEmpty()){
+    QString img_path2;
+    if(g_img_path1.empty()){
         ui->debuglabel_2->setText("1枚目の画像を先に選択してください。");
     }else{
         QString selFilter;
-        g_img_path2 = QFileDialog::getOpenFileName(this, tr("2枚目の画像選択"), "", tr("Image(*.png *.jpg *.jpeg)"), &selFilter, QFileDialog::DontUseCustomDirectoryIcons); //opencvに渡すには共通の変数にするべきだね
-        if(g_img_path2.isEmpty()){
+        img_path2 = QFileDialog::getOpenFileName(this, tr("2枚目の画像選択"), "", tr("Image(*.png *.jpg *.jpeg)"), &selFilter, QFileDialog::DontUseCustomDirectoryIcons); //opencvに渡すには共通の変数にするべきだね
+        g_img_path2 = img_path2.toStdString();
+        #ifdef VIEWPATH
+            std::cout << "g_img_path2 is " << g_img_path2 << std::endl;
+        #endif
+        if(g_img_path2.empty()){
             ui->debuglabel_2->setText("2枚目の画像の取得に失敗しました。もう一度選択してください。");
         }else{
             ui->debuglabel_2->setText("");
