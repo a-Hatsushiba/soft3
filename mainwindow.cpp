@@ -1,7 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#define VIEWPATH 1
+#define DEBUG 0
+#define VIEWPATH 0
 #define PATH1 "/home/akari/workspace/soft3/Qt/soft3_vol2/test1.png"
 #define PATH2 "/home/akari/workspace/soft3/Qt/soft3_vol2/test2.png"
 
@@ -32,13 +33,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->cameraTakeButton_1->setStyleSheet("background-color:gainsboro;");
 }
 
+/*** デストラクタ ***/
 MainWindow::~MainWindow()
 {
     getUsbCamT->Stop = true; //USBカメラ
     delete ui;
 }
 
-/** USBカメラ **/
+/** USBカメラ画像表示 **/
 void MainWindow::onValueChangedCam()
 {
     cv::Mat dst;
@@ -47,18 +49,20 @@ void MainWindow::onValueChangedCam()
     ui->cameraLabel_1->setPixmap(QPixmap::fromImage(qtImage));
 }
 
-
+/*** 終了ボタンを押したとき ***/
 void MainWindow::on_quitButton_released()
 {
     exit(0);
 }
+
+/*** スタート画面のボタンを押したとき ***/
 void MainWindow::on_startButton_released()
 {
     auto current_page = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(++current_page);
 }
 
-
+/*** ファイル選択ボタンを押したとき ***/
 void MainWindow::on_fileSelectButton_released()
 {
     auto current_page = ui->stackedWidget->currentIndex();
@@ -66,20 +70,22 @@ void MainWindow::on_fileSelectButton_released()
     ui->debuglabel_2->setText("1枚目の画像を選択してください。");
 }
 
+/*** 2ページ目(ファイルorカメラ選択)の戻るボタンを押したとき ***/
 void MainWindow::on_returnButton_1_released()
 {
     auto current_page = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(--current_page);
 }
 
+/*** ファイル選択の1枚目のボタンを押したとき ***/
 void MainWindow::on_fileOpenButton_1_released()
 {
     QString selFilter, img_path1;
     img_path1 = QFileDialog::getOpenFileName(this, tr("1枚目の画像選択"), "", tr("Image(*.png *.jpg *.jpeg)"), &selFilter, QFileDialog::DontUseCustomDirectoryIcons); //opencvに渡すには共通の変数にするべきだね
     g_img_path1 = img_path1.toStdString();
-    #ifdef VIEWPATH
+    if(VIEWPATH){
         std::cout << "g_img_path1 is " << g_img_path1 << std::endl;
-    #endif
+    }
     if(g_img_path1.empty()){
         ui->debuglabel_2->setText("1枚目の画像の取得に失敗しました。もう一度選択してください。");
     }else{
@@ -87,21 +93,54 @@ void MainWindow::on_fileOpenButton_1_released()
     }
 }
 
+/*** ファイル選択の2枚目のボタンを押したとき ***/
+void MainWindow::on_fileOpenButton_2_released()
+{
+    QString img_path2;
+    if(g_img_path1.empty()){
+        ui->debuglabel_2->setText("1枚目の画像を先に選択してください。");
+    }else{
+        QString selFilter;
+        img_path2 = QFileDialog::getOpenFileName(this, tr("2枚目の画像選択"), "", tr("Image(*.png *.jpg *.jpeg)"), &selFilter, QFileDialog::DontUseCustomDirectoryIcons); //opencvに渡すには共通の変数にするべきだね
+        g_img_path2 = img_path2.toStdString();
+        if(VIEWPATH){
+            std::cout << "g_img_path2 is " << g_img_path2 << std::endl;
+        }
+        if(g_img_path2.empty()){
+            ui->debuglabel_2->setText("2枚目の画像の取得に失敗しました。もう一度選択してください。");
+        }else{
+            ui->debuglabel_2->setText("");
+            auto current_page = ui->stackedWidget->currentIndex();
+            ui->stackedWidget->setCurrentIndex(++current_page);
+        }
+    }
+
+}
+
+/*** ファイル画像を選択するときに戻るボタンを押したとき ***/
 void MainWindow::on_returnButton_2_released()
 {
     auto current_page = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(current_page-2);
 }
 
+/*** 2ページ目(ファイルorカメラ選択)でカメラボタンを押したとき ***/
 void MainWindow::on_cameraButton_1_released()
 {
     auto current_page = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(++current_page);
     ui->debuglabel_3->setText("1枚目の画像を撮影してください。");
+    if(DEBUG){
+        std::cout << "NextPage" << std::endl;
+    }
     /**USBカメラ**/
     getUsbCamT = new getUsbCamera(this);
     if(getUsbCamT->initCam()){
+        if(DEBUG) std::cout << "connect start!!!" << std::endl;
         connect(getUsbCamT, SIGNAL(valueChangedCam(void)), this, SLOT(onValueChangedCam(void)));
+        if(DEBUG){
+            std::cout << "Thread start!!!" << std::endl;
+        }
         getUsbCamT->start();
     }else{
         QMessageBox msgBox(this);
@@ -117,6 +156,7 @@ void MainWindow::on_cameraButton_1_released()
     }
 }
 
+/*** カメラ画像が出て撮影ボタンを押したとき ***/
 void MainWindow::on_cameraTakeButton_1_released()
 {
     cv::Mat img;
@@ -127,9 +167,9 @@ void MainWindow::on_cameraTakeButton_1_released()
     if(g_count == 1){
         cv::imwrite(PATH1, img);
         g_img_path1 = PATH1;
-        #ifdef VIEWPATH
+        if(VIEWPATH){
             std::cout << "g_img_path1 is " << g_img_path1 << std::endl;
-        #endif
+        }
         if(g_img_path1.empty()){
             ui->debuglabel_3->setText("もう一度1枚目の画像を撮影してください。");
             g_count--;
@@ -142,37 +182,14 @@ void MainWindow::on_cameraTakeButton_1_released()
         if(g_img_path2.empty()){
             ui->debuglabel_3->setText("もう一度2枚目の画像を撮影してください。");
         }
-        #ifdef VIEWPATH
+        if(VIEWPATH){
             std::cout << "g_img_path2 is " << g_img_path2 << std::endl;
-        #endif
+        }
         g_count = 0;
         ui->debuglabel_3->setText("");
         getUsbCamT->Stop = true;
         auto current_page = ui->stackedWidget->currentIndex();
         ui->stackedWidget->setCurrentIndex(current_page+2);
     }
-}
-
-void MainWindow::on_fileOpenButton_2_released()
-{
-    QString img_path2;
-    if(g_img_path1.empty()){
-        ui->debuglabel_2->setText("1枚目の画像を先に選択してください。");
-    }else{
-        QString selFilter;
-        img_path2 = QFileDialog::getOpenFileName(this, tr("2枚目の画像選択"), "", tr("Image(*.png *.jpg *.jpeg)"), &selFilter, QFileDialog::DontUseCustomDirectoryIcons); //opencvに渡すには共通の変数にするべきだね
-        g_img_path2 = img_path2.toStdString();
-        #ifdef VIEWPATH
-            std::cout << "g_img_path2 is " << g_img_path2 << std::endl;
-        #endif
-        if(g_img_path2.empty()){
-            ui->debuglabel_2->setText("2枚目の画像の取得に失敗しました。もう一度選択してください。");
-        }else{
-            ui->debuglabel_2->setText("");
-            auto current_page = ui->stackedWidget->currentIndex();
-            ui->stackedWidget->setCurrentIndex(++current_page);
-        }
-    }
-
 }
 

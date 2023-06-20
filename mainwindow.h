@@ -44,11 +44,9 @@ private slots:
 
     void on_fileOpenButton_2_released();
 
-    void on_cameraTakeButton_2_released();
-
 private:
     Ui::MainWindow *ui;
 
-    QImage qtImage; //USBカメラつ
+    QImage qtImage; //USBカメラ
 };
 #endif // MAINWINDOW_H
